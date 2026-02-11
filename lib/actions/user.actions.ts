@@ -1,3 +1,4 @@
+
 "use server";
 
 import { createAdminClient, createSessionClient } from "@/lib/appwrite";
@@ -5,7 +6,7 @@ import { appwriteConfig } from "@/lib/appwrite/config";
 import { Query, ID } from "node-appwrite";
 import { parseStringify } from "@/lib/utils";
 import { cookies } from "next/headers";
-// import { avatarPlaceholderUrl } from "@/constants";
+import { avatarPlaceholderUrl } from "@/constants";
 import { redirect } from "next/navigation";
 
 const getUserByEmail = async (email: string) => {
@@ -26,12 +27,17 @@ const handleError = (error: unknown, message: string) => {
 };
 
 export const sendEmailOTP = async ({ email }: { email: string }) => {
-  const { account } = await createAdminClient();
+  const { account, users } = await createAdminClient();
 
   try {
-    const session = await account.createEmailToken(ID.unique(), email);
+    const existingUsers = await users.list([Query.equal("email", [email])]);
 
-    return session.userId;
+    const userId =
+      existingUsers.total > 0 ? existingUsers.users[0].$id : ID.unique();
+
+    const session = await account.createEmailToken(userId, email);
+
+    return parseStringify({ accountId: session.userId });
   } catch (error) {
     handleError(error, "Failed to send email OTP");
   }
@@ -46,7 +52,7 @@ export const createAccount = async ({
 }) => {
   const existingUser = await getUserByEmail(email);
 
-  const accountId = await sendEmailOTP({ email });
+  const { accountId } = await sendEmailOTP({ email });
   if (!accountId) throw new Error("Failed to send an OTP");
 
   if (!existingUser) {
@@ -59,7 +65,7 @@ export const createAccount = async ({
       {
         fullName,
         email,
-        // avatar: avatarPlaceholderUrl,
+        avatar: avatarPlaceholderUrl,
         accountId,
       },
     );
@@ -130,10 +136,20 @@ export const signInUser = async ({ email }: { email: string }) => {
   try {
     const existingUser = await getUserByEmail(email);
 
-    // User exists, send OTP
     if (existingUser) {
-      await sendEmailOTP({ email });
-      return parseStringify({ accountId: existingUser.accountId });
+      const { accountId } = await sendEmailOTP({ email });
+
+      if (accountId !== existingUser.accountId) {
+        const { databases } = await createAdminClient();
+        await databases.updateDocument(
+          appwriteConfig.databaseId,
+          appwriteConfig.usersCollectionId,
+          existingUser.$id,
+          { accountId },
+        );
+      }
+
+      return parseStringify({ accountId });
     }
 
     return parseStringify({ accountId: null, error: "User not found" });
