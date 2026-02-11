@@ -4,7 +4,7 @@ import MobileNavigation from "@/components/MobileNavigation";
 import Header from "@/components/Header";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
-import { Toaster } from "@/components/ui/sonner";
+import { Toast } from "@/components/ui/toast";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         <div className="main-content">{children}</div>
       </section>
 
-      <Toaster />
+      <Toast />
     </main>
   );
 };
