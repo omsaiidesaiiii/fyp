@@ -90,7 +90,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                     <FormControl>
                       <Input
                         placeholder="Enter your full name"
-                        className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand bg-white text-black transition-all"
+                        className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
                         {...field}
                       />
                     </FormControl>
@@ -108,11 +108,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
               <FormItem>
                 <FormLabel className="block text-sm font-medium mb-1 text-gray-700">Email Address</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter your email"
-                    className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand bg-white text-black transition-all"
-                    {...field}
-                  />
+                    <Input
+                      placeholder="Enter your email"
+                      className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
+                      {...field}
+                    />
                 </FormControl>
 
                 <FormMessage className="text-red-500 text-xs mt-1" />
@@ -122,7 +122,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-brand to-rose-500 hover:from-brand-100 hover:to-rose-600 text-white font-medium h-[45px] rounded-lg transition-all shadow-lg shadow-brand/20 mt-2"
+            className="w-full bg-brand hover:bg-brand-100 text-white font-medium h-[45px] rounded-lg transition-all shadow-md mt-2 focus:ring-2 focus:ring-brand focus:ring-offset-2 outline-none"
             disabled={isLoading}
           >
             {type === "sign-in" ? "Sign In" : "Sign Up"}

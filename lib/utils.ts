@@ -63,9 +63,9 @@ export const getFileType = (fileName: string) => {
     "afphoto",
     "afphoto",
   ];
+  const videoExtensions = ["mp4", "avi", "mov", "mkv", "webm", "m4v", "mpg", "mpeg"];
   const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"];
-  const videoExtensions = ["mp4", "avi", "mov", "mkv", "webm"];
-  const audioExtensions = ["mp3", "wav", "ogg", "flac"];
+  const audioExtensions = ["mp3", "wav", "ogg", "flac", "m4a"];
 
   if (documentExtensions.includes(extension))
     return { type: "document", extension };
