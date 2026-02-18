@@ -117,10 +117,10 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
         </DialogHeader>
         {["rename", "delete", "share"].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row">
-            <Button onClick={closeAllModals} className="modal-cancel-button">
+            <Button onClick={closeAllModals} className="h-11 rounded-full bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all font-medium px-6">
               Cancel
             </Button>
-            <Button onClick={handleAction} className="modal-submit-button">
+            <Button onClick={handleAction} className={`h-11 rounded-full text-white shadow-md transition-all font-medium px-6 flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-2 outline-none ${value === 'delete' ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500' : 'bg-brand hover:bg-brand-100 focus:ring-brand'}`}>
               <p className="capitalize">{value}</p>
               {isLoading && (
                 <Image

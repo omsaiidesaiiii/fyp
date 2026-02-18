@@ -63,7 +63,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleRemoveFile = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     fileName: string,
   ) => {
     e.stopPropagation();
@@ -73,18 +73,22 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   return (
     <div {...getRootProps()} className="cursor-pointer">
       <input {...getInputProps()} />
-      <Button type="button" className={cn("uploader-button", className)}>
+      <Button type="button" className={cn("bg-brand hover:bg-brand-100 text-white font-medium h-11 rounded-full px-6 shadow-md transition-all gap-2 focus:ring-2 focus:ring-brand focus:ring-offset-2 outline-none", className)}>
         <Image
           src="/assets/icons/upload.svg"
           alt="upload"
-          width={24}
-          height={24}
-        />{" "}
+          width={22}
+          height={22}
+          className="opacity-90"
+        />
         <p>Upload</p>
       </Button>
       {files.length > 0 && (
-        <ul className="uploader-preview-list">
-          <h4 className="h4 text-light-100">Uploading</h4>
+        <ul className="fixed bottom-10 right-10 z-[100] flex w-full max-w-[480px] flex-col gap-3 rounded-[20px] bg-white p-7 shadow-2xl border border-gray-100 animate-in slide-in-from-bottom-5 duration-300">
+          <h4 className="text-[18px] font-bold text-dark-100 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-brand animate-pulse" />
+            Uploading {files.length} {files.length === 1 ? 'file' : 'files'}
+          </h4>
 
           {files.map((file, index) => {
             const { type, extension } = getFileType(file.name);
@@ -92,33 +96,46 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
             return (
               <li
                 key={`${file.name}-${index}`}
-                className="uploader-preview-item"
+                className="flex items-center justify-between gap-3 rounded-xl border border-gray-50 bg-gray-50/50 p-3"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 overflow-hidden">
                   <Thumbnail
                     type={type}
                     extension={extension}
                     url={convertFileToUrl(file)}
+                    className="size-10 rounded-lg bg-white shadow-sm"
                   />
 
-                  <div className="preview-item-name">
-                    {file.name}
-                    <Image
-                      src="/assets/icons/file-loader.gif"
-                      width={80}
-                      height={26}
-                      alt="Loader"
-                    />
+                  <div className="flex flex-col gap-1 overflow-hidden">
+                    <p className="text-sm font-semibold text-dark-100 line-clamp-1">
+                      {file.name}
+                    </p>
+                    <div className="flex items-center gap-2">
+                         <span className="text-[10px] font-medium text-gray-400">Loading...</span>
+                         <Image
+                           src="/assets/icons/file-loader.gif"
+                           width={60}
+                           height={20}
+                           alt="Loader"
+                           className="opacity-60"
+                         />
+                    </div>
                   </div>
                 </div>
 
-                <Image
-                  src="/assets/icons/remove.svg"
-                  width={24}
-                  height={24}
-                  alt="Remove"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
                   onClick={(e) => handleRemoveFile(e, file.name)}
-                />
+                >
+                  <Image
+                    src="/assets/icons/remove.svg"
+                    width={20}
+                    height={20}
+                    alt="Remove"
+                  />
+                </Button>
               </li>
             );
           })}

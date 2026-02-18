@@ -70,29 +70,32 @@ const AuthForm = ({ type }: { type: FormType }) => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
-          <h1 className="form-title">
-            {type === "sign-in" ? "Sign In" : "Sign Up"}
-          </h1>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form flex flex-col gap-5 w-full">
+          <div className="flex flex-col items-start mb-6">
+            <h1 className="text-3xl font-bold tracking-tight text-dark-100">
+              {type === "sign-in" ? "Welcome Back" : "Get Started"}
+            </h1>
+             <p className="text-gray-500 mt-2">
+               {type === "sign-in" ? "Enter your email to access your account" : "Create an account to start storing your files"}
+             </p>
+          </div>
+
           {type === "sign-up" && (
             <FormField
               control={form.control}
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <div className="shad-form-item">
-                    <FormLabel className="shad-form-label">Full Name</FormLabel>
-
+                  <FormLabel className="block text-sm font-medium mb-1 text-gray-700">Full Name</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter your full name"
-                        className="shad-input"
+                        className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
                         {...field}
                       />
                     </FormControl>
-                  </div>
 
-                  <FormMessage className="shad-form-message" />
+                  <FormMessage className="text-red-500 text-xs mt-1" />
                 </FormItem>
               )}
             />
@@ -103,26 +106,23 @@ const AuthForm = ({ type }: { type: FormType }) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <div className="shad-form-item">
-                  <FormLabel className="shad-form-label">Email</FormLabel>
-
-                  <FormControl>
+                <FormLabel className="block text-sm font-medium mb-1 text-gray-700">Email Address</FormLabel>
+                <FormControl>
                     <Input
                       placeholder="Enter your email"
-                      className="shad-input"
+                      className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
                       {...field}
                     />
-                  </FormControl>
-                </div>
+                </FormControl>
 
-                <FormMessage className="shad-form-message" />
+                <FormMessage className="text-red-500 text-xs mt-1" />
               </FormItem>
             )}
           />
 
           <Button
             type="submit"
-            className="form-submit-button"
+            className="w-full bg-brand hover:bg-brand-100 text-white font-medium h-[45px] rounded-lg transition-all shadow-md mt-2 focus:ring-2 focus:ring-brand focus:ring-offset-2 outline-none"
             disabled={isLoading}
           >
             {type === "sign-in" ? "Sign In" : "Sign Up"}
@@ -138,19 +138,22 @@ const AuthForm = ({ type }: { type: FormType }) => {
             )}
           </Button>
 
-          {errorMessage && <p className="error-message">*{errorMessage}</p>}
+          {errorMessage && (
+             <div className="p-3 bg-red-50 border border-red-100 rounded-lg">
+                <p className="text-red-500 text-sm text-center font-medium">*{errorMessage}</p>
+             </div>
+          )}
 
-          <div className="body-2 flex justify-center">
-            <p className="text-light-100">
+          <div className="text-center text-gray-600 text-sm mt-4">
+            <p className="inline">
               {type === "sign-in"
                 ? "Don't have an account?"
                 : "Already have an account?"}
             </p>
             <Link
               href={type === "sign-in" ? "/sign-up" : "/sign-in"}
-              className="ml-1 font-medium text-brand"
+              className="ml-1 font-semibold text-brand hover:underline transition-all"
             >
-              {" "}
               {type === "sign-in" ? "Sign Up" : "Sign In"}
             </Link>
           </div>

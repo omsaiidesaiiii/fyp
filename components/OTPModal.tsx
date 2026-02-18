@@ -20,6 +20,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { verifySecret, sendEmailOTP } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 const OtpModal = ({
   accountId,
@@ -32,70 +33,95 @@ const OtpModal = ({
   const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [timer, setTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      setCanResend(true);
+    }
+
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
-
-    console.log({ accountId, password });
+    setError("");
 
     try {
       const sessionId = await verifySecret({ accountId, password });
 
-      console.log({ sessionId });
-
-      if (sessionId) router.push("/");
+      if (sessionId) {
+        router.push("/");
+      } else {
+        setError("Invalid OTP. Please try again.");
+      }
     } catch (error) {
       console.log("Failed to verify OTP", error);
+      setError("Failed to verify OTP. Please try again.");
     }
 
     setIsLoading(false);
   };
 
   const handleResendOtp = async () => {
+    if (!canResend) return;
+
     await sendEmailOTP({ email });
+    setTimer(60);
+    setCanResend(false);
+    setError("");
   };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent className="shad-alert-dialog">
-        <AlertDialogHeader className="relative flex justify-center">
-          <AlertDialogTitle className="h2 text-center">
-            Enter Your OTP
-            <Image
-              src="/assets/icons/close-dark.svg"
-              alt="close"
-              width={20}
-              height={20}
-              onClick={() => setIsOpen(false)}
-              className="otp-close-button"
-            />
+      <AlertDialogContent className="bg-white/95 backdrop-blur-3xl border border-gray-100 shadow-2xl rounded-[2rem] p-10 max-w-[420px] outline-none gap-8">
+        
+        {/* Close Button - positioned absolute to content */}
+        <div className="absolute top-5 right-5 cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors group z-50" onClick={() => setIsOpen(false)}>
+            <X className="w-5 h-5 text-gray-400 group-hover:text-gray-600" />
+        </div>
+
+        <AlertDialogHeader className="space-y-4 flex flex-col items-center">
+          <AlertDialogTitle className="text-3xl font-bold text-center text-gray-900 tracking-tight w-full">
+            Verification Code
           </AlertDialogTitle>
-          <AlertDialogDescription className="subtitle-2 text-center text-light-100">
-            We&apos;ve sent a code to{" "}
-            <span className="pl-1 text-brand">{email}</span>
+          <AlertDialogDescription className="text-center text-gray-500 text-base leading-relaxed max-w-[85%] mx-auto">
+            We've sent a 6-digit code to <br/>
+            <span className="font-semibold text-gray-800">{email}</span>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <InputOTP maxLength={6} value={password} onChange={setPassword}>
-          <InputOTPGroup className="shad-otp">
-            <InputOTPSlot index={0} className="shad-otp-slot" />
-            <InputOTPSlot index={1} className="shad-otp-slot" />
-            <InputOTPSlot index={2} className="shad-otp-slot" />
-            <InputOTPSlot index={3} className="shad-otp-slot" />
-            <InputOTPSlot index={4} className="shad-otp-slot" />
-            <InputOTPSlot index={5} className="shad-otp-slot" />
-          </InputOTPGroup>
-        </InputOTP>
+        <div className="flex flex-col items-center justify-center w-full my-2">
+            <InputOTP maxLength={6} value={password} onChange={setPassword}>
+              <InputOTPGroup className="gap-3 sm:gap-4">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                    <InputOTPSlot
+                        key={index}
+                        index={index}
+                        className="w-10 h-12 sm:w-12 sm:h-14 border-2 border-gray-100 rounded-xl text-xl font-bold text-gray-800 shadow-sm focus:border-brand focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-all outline-none bg-white/50"
+                    />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+            {error && <p className="text-red-500 text-sm mt-2 text-center font-medium">{error}</p>}
+        </div>
 
-        <AlertDialogFooter>
-          <div className="flex w-full flex-col gap-4">
+        <AlertDialogFooter className="sm:justify-center">
+          <div className="flex w-full flex-col gap-5">
             <AlertDialogAction
               onClick={handleSubmit}
-              className="shad-submit-btn h-12"
+              className="w-full !bg-indigo-600 hover:!bg-indigo-700 text-white font-semibold h-[50px] rounded-xl shadow-md transition-all text-lg border-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 outline-none"
               type="button"
             >
-              Submit
+              Verify Code
               {isLoading && (
                 <Image
                   src="/assets/icons/loader.svg"
@@ -107,15 +133,16 @@ const OtpModal = ({
               )}
             </AlertDialogAction>
 
-            <div className="subtitle-2 mt-2 text-center text-light-100">
-              Didn&apos;t get a code?
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <span className="font-medium">Didn't receive code?</span>
               <Button
                 type="button"
-                variant="link"
-                className="pl-1 text-brand"
+                variant="ghost"
+                className={`p-0 h-auto font-bold transition-colors ${canResend ? "text-brand hover:text-brand-100 hover:bg-transparent" : "text-gray-500 cursor-not-allowed"}`}
                 onClick={handleResendOtp}
+                disabled={!canResend}
               >
-                Click to resend
+                {canResend ? "Resend" : `Resend in ${timer}s`}
               </Button>
             </div>
           </div>

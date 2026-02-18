@@ -13,24 +13,23 @@ const Header = ({
   accountId: string;
 }) => {
   return (
-    <header className="header">
+    <header className="flex items-center justify-between gap-5 px-5 py-5 sm:px-8  backdrop-blur-md border-gray-200 sticky top-0 z-30 transition-all">
       <Search />
-      <div className="header-wrapper">
+      <div className="hidden md:flex items-center gap-4">
         <FileUploader ownerId={userId} accountId={accountId} />
         <form
           action={async () => {
-            "use server";
-
-            await signOutUser();
-          }}
+             "use server";
+             await signOutUser();
+           }}
         >
-          <Button type="submit" className="sign-out-button">
+          <Button type="submit" className="sign-out-button p-0 md:h-11 md:w-11 bg-white hover:bg-gray-50 border border-gray-200 rounded-full shadow-sm">
             <Image
               src="/assets/icons/logout.svg"
               alt="logo"
-              width={24}
-              height={24}
-              className="w-6"
+              width={22}
+              height={22}
+              className="w-5 h-5 opacity-70"
             />
           </Button>
         </form>

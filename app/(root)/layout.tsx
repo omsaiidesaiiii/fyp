@@ -14,13 +14,17 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   if (!currentUser) return redirect("/sign-in");
 
   return (
-    <main className="flex h-screen">
+    <main className="flex h-screen bg-[#f9fafb] overflow-hidden">
       <Sidebar {...currentUser} />
 
-      <section className="flex h-full flex-1 flex-col">
+      <section className="flex h-full flex-1 flex-col relative z-10 transition-all">
         <MobileNavigation {...currentUser} />
         <Header userId={currentUser.$id} accountId={currentUser.accountId} />
-        <div className="main-content">{children}</div>
+        <div className="flex-1 overflow-auto px-5 py-7 sm:px-8 sm:py-8 scroll-smooth custom-scrollbar">
+            <div className="mx-auto max-w-7xl w-full">
+              {children}
+            </div>
+        </div>
       </section>
 
       <Toaster />

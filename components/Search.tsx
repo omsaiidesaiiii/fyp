@@ -52,52 +52,55 @@ const Search = () => {
   };
 
   return (
-    <div className="search">
-      <div className="search-input-wrapper">
+    <div className="relative w-full md:max-w-[480px]">
+      <div className="flex items-center gap-3 bg-white rounded-full px-4 py-3 border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-brand/20 focus-within:border-brand transition-all">
         <Image
           src="/assets/icons/search.svg"
           alt="Search"
-          width={24}
-          height={24}
+          width={20}
+          height={20}
+          className="opacity-50"
         />
         <Input
           value={query}
           placeholder="Search..."
-          className="search-input"
+          className="border-none shadow-none focus-visible:ring-0 p-0 h-auto placeholder:text-gray-400 text-[15px] w-full"
           onChange={(e) => setQuery(e.target.value)}
         />
 
         {open && (
-          <ul className="search-result">
-            {results.length > 0 ? (
-              results.map((file) => (
-                <li
-                  className="flex items-center justify-between"
-                  key={file.$id}
-                  onClick={() => handleClickItem(file)}
-                >
-                  <div className="flex cursor-pointer items-center gap-4">
-                    <Thumbnail
-                      type={file.type}
-                      extension={file.extension}
-                      url={file.url}
-                      className="size-9 min-w-9"
-                    />
-                    <p className="subtitle-2 line-clamp-1 text-light-100">
-                      {file.name}
-                    </p>
-                  </div>
+          <div className="absolute top-14 left-0 w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+            <ul className="flex flex-col">
+              {results.length > 0 ? (
+                results.map((file) => (
+                  <li
+                    className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+                    key={file.$id}
+                    onClick={() => handleClickItem(file)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Thumbnail
+                        type={file.type}
+                        extension={file.extension}
+                        url={file.url}
+                        className="size-10 min-w-10 rounded-lg"
+                      />
+                      <p className="text-sm font-semibold text-dark-100 line-clamp-1">
+                        {file.name}
+                      </p>
+                    </div>
 
-                  <FormattedDateTime
-                    date={file.$createdAt}
-                    className="caption line-clamp-1 text-light-200"
-                  />
-                </li>
-              ))
-            ) : (
-              <p className="empty-result">No files found</p>
-            )}
-          </ul>
+                    <FormattedDateTime
+                      date={file.$createdAt}
+                      className="text-xs text-gray-400 font-medium"
+                    />
+                  </li>
+                ))
+              ) : (
+                <p className="p-6 text-center text-gray-400 text-sm">No files found</p>
+              )}
+            </ul>
+          </div>
         )}
       </div>
     </div>
