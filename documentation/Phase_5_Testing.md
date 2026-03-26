@@ -71,6 +71,21 @@
 | TC-39 | Category card navigation | Click "Documents" card | Navigates to /documents page | Navigated correctly | ✅ Pass |
 | TC-40 | Storage chart accuracy | User has 100 MB used | Chart reflects 100 MB / 2 GB usage | Accurate visualization | ✅ Pass |
 
+### 1.6 Admin Module Test Cases (New)
+
+| TC ID | Test Case Description | Input | Expected Output | Actual Output | Status |
+|-------|----------------------|-------|-----------------|---------------|--------|
+| TC-41 | Admin login with valid credentials | Email: "admin@storeit.com", Password: "valid_password" | Redirect to Admin Dashboard | Logged in to Admin Portal | ✅ Pass |
+| TC-42 | Admin login with invalid password | Email: "admin@storeit.com", Password: "wrong_password" | Error: "Invalid credentials" | Error message displayed | ✅ Pass |
+| TC-43 | Non-admin user attempts admin login | Email: "user@test.com", Password: "user_password" | Error: "Unauthorized access" | Redirected with error | ✅ Pass |
+| TC-44 | Platform analytics data accuracy | Overall system has 500 MB used | Admin chart shows 500 MB / Global Target | Statistics updated | ✅ Pass |
+| TC-45 | Top Users activity list | Users with most uploads | List shows users sorted by storage used | Correct users displayed | ✅ Pass |
+| TC-46 | Block a user account | Click "Block" on active user | User status becomes "Blocked", isActive=false | User blocked successfully | ✅ Pass |
+| TC-47 | Unblock a user account | Click "Unblock" on blocked user | User status becomes "Active", isActive=true | User unblocked successfully | ✅ Pass |
+| TC-48 | Blocked user attempt to sign in | Sign in as blocked user | Error: "Account is blocked" during OTP verification | Access denied to user | ✅ Pass |
+| TC-49 | Admin navigation sidebar | Click through admin links | Smooth transition between Dash/Users | Navigated correctly | ✅ Pass |
+| TC-50 | Admin sign out | Click "Sign Out" | Destroy admin session, redirect /admin-login | Admin signed out | ✅ Pass |
+
 ---
 
 ## 2. Unit Testing
@@ -141,6 +156,11 @@ System testing was conducted on the complete StoreIt application to verify end-t
 | 8 | Brute Force OTP | Submit multiple wrong OTPs rapidly | Appwrite rate limiting prevents abuse | ✅ Secure |
 | 9 | File Path Traversal | Upload file with `../../etc/passwd` name | Appwrite Storage sanitizes file names | ✅ Secure |
 | 10 | Unauthorized File Access | Access another user's file URL directly | File requires authenticated session with proper ownership | ✅ Secure |
+| 11 | Admin Panel Access Leak | Regular user visits `/admin` URL | Server-side redirection to `/admin-login` for unauthorized users | ✅ Secure |
+| 12 | Admin Label Verification | Manual session cookie creation | Admin server functions verify "admin" label badge via Users API | ✅ Secure |
+| 13 | Cross-Account File Leak | Admin attempts to URL-fetch user file | Blocked by Appwrite permissions; admins only see metadata stats | ✅ Secure |
+| 14 | Admin ID Spoofing | Manually set `appwrite-admin-id` cookie | Admin client fetches user by ID and verifies label independently | ✅ Secure |
+| 15 | Short Admin Sessions | 24-hour limit on admin session | Automatic logout for admins after 24h idle time | ✅ Secure |
 
 ---
 

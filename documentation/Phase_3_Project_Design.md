@@ -97,6 +97,11 @@ StoreIt follows a **Three-Tier Architecture** pattern, separating the applicatio
 - **Files:** `app/(root)/[type]/page.tsx`, `Sort.tsx`, `Thumbnail.tsx`, `FormattedDateTime.tsx`
 - **Description:** Dynamic route pages for each file category. Displays files in a responsive grid with cards showing thumbnails, file names, sizes, and dates. Includes sorting controls for multiple criteria.
 
+### Module 8: Admin Module (New)
+- **Files:** `admin.actions.ts`, `AdminSidebar.tsx`, `AdminUsersTable.tsx`, `AdminLoginForm.tsx`
+- **Description:** Centralized management system for platform administrators. Provides aggregated storage analytics, user activity lists, and moderation tools (block/unblock).
+- **Privacy Design:** Strictly enforces data privacy by displaying only aggregated storage sizes and file counts. Admins cannot view, download, or manage individual user files.
+
 ---
 
 ## 3. Database Design
@@ -112,6 +117,7 @@ StoreIt uses **Appwrite Database** with two primary collections:
 | email | String | Required, Unique | User's email address |
 | avatar | URL (String) | Required | URL to user's avatar image |
 | accountId | String | Required | Reference to Appwrite Auth account ID |
+| isActive | Boolean | Required (Default: True) | Account status (Active/Blocked) |
 | $createdAt | DateTime | Auto-generated | Account creation timestamp |
 | $updatedAt | DateTime | Auto-generated | Last update timestamp |
 
@@ -304,8 +310,8 @@ StoreIt uses **Appwrite Database** with two primary collections:
 ## 6. Use Case Diagram
 
 ```
-                          USE CASE DIAGRAM
-                          =================
+                           USE CASE DIAGRAM
+                           =================
 
         ┌─────────────────────────────────────────────────┐
         │              StoreIt System                      │
@@ -317,45 +323,46 @@ StoreIt uses **Appwrite Database** with two primary collections:
         │    │  Sign In (OTP)  │◄──────────┤               │
         │    └─────────────────┘           │               │
         │    ┌─────────────────┐           │               │
-   ┌────┤    │  Upload File    │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  View Dashboard │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  Search Files   │◄──────────┤    ┌──────┐   │
-   │    │    └─────────────────┘           ├────│ User │   │
-   │    │    ┌─────────────────┐           │    └──────┘   │
-   │    │    │  Sort Files     │◄──────────┤   (Actor)     │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  Rename File    │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  Delete File    │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  Download File  │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  Share File     │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  View Details   │◄──────────┤               │
-   │    │    └─────────────────┘           │               │
-   │    │    ┌─────────────────┐           │               │
-   │    │    │  Sign Out       │◄──────────┘               │
-   │    │    └─────────────────┘                           │
-   │    └──────────────────────────────────────────────────┘
-   │
-   │    ┌──────────────────┐
-   └───►│ Appwrite Cloud   │  (Secondary Actor)
-        │ (Auth, DB,       │
-        │  Storage)        │
-        └──────────────────┘
+        │    │  Upload File    │◄──────────┤               │
+        │    └─────────────────┘           │               │
+        │    ┌─────────────────┐           │               │
+        │    │  View Dashboard │◄──────────┤    ┌──────┐   │
+        │    └─────────────────┘           ├────│ User │   │
+        │    ┌─────────────────┐           │    └──────┘   │
+        │    │  Search Files   │◄──────────┤   (Actor)     │
+        │    └─────────────────┘           │               │
+        │    ┌─────────────────┐           │               │
+        │    │  Manage Files   │◄──────────┤               │
+        │    └─────────────────┘           │               │
+        │                                  │               │
+        │    ┌───────────────────┐         │               │
+        │    │  Admin Login      │◄────────┤               │
+        │    │  (Password)       │         │               │
+        │    └───────────────────┘         │               │
+        │    ┌───────────────────┐         │               │
+        │    │  View Platform    │◄────────┤               │
+        │    │  Analytics        │         │    ┌───────┐  │
+        │    └───────────────────┘         ├────│ Admin │  │
+        │    ┌───────────────────┐         │    └───────┘  │
+        │    │  Block/Unblock    │◄────────┤    (Actor)    │
+        │    │  Users            │         │               │
+        │    └───────────────────┘         │               │
+        │                                  │               │
+        │    ┌─────────────────┐           │               │
+        │    │  Sign Out       │◄──────────┘               │
+        │    └─────────────────┘                           │
+        │                                                  │
+        └──────────────────────────────────────────────────┘
+         │
+         │    ┌──────────────────┐
+         └───►│ Appwrite Cloud   │  (Secondary Actor)
+              │ (Auth, DB,       │
+              │  Storage)        │
+              └──────────────────┘
 
   Actors:
-  ├── User (Primary Actor): End user who interacts with the system
+  ├── User (Primary Actor): End user who interacts with common storage features
+  ├── Admin (Primary Actor): Privileged user who manages the platform
   └── Appwrite Cloud (Secondary Actor): Provides backend services
 ```
 
@@ -394,7 +401,9 @@ StoreIt adopts a **clean, minimalist, and modern design** approach inspired by l
 2. **OTP Verification Modal** — Centered dialog with 6-digit OTP input slots
 3. **Dashboard** — Two-column grid with storage chart (left) and recent uploads (right)
 4. **File Category Pages** — Responsive grid (1–4 columns) with file cards and sort controls
-5. **File Action Modals** — Dialog-based modals for Rename, Share, Delete confirmations
+5. **Admin Dashboard** — Premium light-themed dashboard with "Platform Health" metrics and red accents
+6. **User Management Page** — Searchable table with status indicators and administrative action buttons
+7. **File Action Modals** — Dialog-based modals for Rename, Share, Delete confirmations
 
 ---
 
@@ -470,18 +479,16 @@ OUTPUT: List of matching files
 
 | Security Measure | Implementation |
 |------------------|----------------|
-| **Passwordless Authentication** | Email OTP eliminates password storage and traditional password attacks |
-| **HTTP-Only Cookies** | Session tokens stored in HTTP-only cookies with 30-day `maxAge`, preventing XSS-based token theft |
-| **Secure Cookie Flag** | Cookies are marked `Secure` (HTTPS only) and `SameSite=Strict` (prevents CSRF) |
-| **Session Persistence** | Sessions persist for 30 days via cookie `maxAge`, so users remain logged in across browser restarts |
-| **Server-Side Actions** | All database and storage operations execute on the server via `"use server"` directives |
-| **Environment Variables** | API keys and secrets stored in `.env` files, never exposed to the client |
-| **Input Validation** | Zod schema validation on all form inputs (email format, name length) |
-| **File Size Validation** | Client-side and server-side validation limits uploads to 50 MB |
-| **Admin Client Separation** | Admin operations (user management, file storage) use a separate Admin SDK client with API key |
-| **Session Client Isolation** | User-facing operations use Session Client with user's own session token |
-| **OTP Expiry** | One-Time Passwords expire after the configured time period |
-| **OTP Resend Rate Limiting** | 60-second cooldown between OTP resend requests prevents abuse |
+| **Passwordless Authentication** | Email OTP for regular users eliminates password storage |
+| **Admin RBAC (Role-Based Access Control)** | Admins use traditional Email/Password auth; strictly restricted by "admin" labels in Appwrite |
+| **Separate Admin Sessions** | Admin sessions expire after 24 hours (shorter persistence) compared to 30 days for users |
+| **HTTP-Only Cookies** | Tokens stored in HTTP-only, Secure (`appwrite-admin-session`) and ID-tracking cookies |
+| **Data Privacy Policy** | Admin server actions (`getAdminDashboardData`) aggregate statistics on the fly; never allow fetching individual file details |
+| **Secure Cookie Flag** | Cookies marked `Secure` and `SameSite=Strict` to prevent CSRF and session hijacking |
+| **Account Locking** | Administrative ability to block users by setting `isActive` to `false` in the database |
+| **Environment Variables** | Secret API keys never exposed to browsers; only used by Server Actions |
+| **Input Validation** | Zod schema validation on both user and admin login forms |
+| **OTP Resend Rate Limiting** | 60-second cooldown prevents brute-forcing or spamming the OTP service |
 
 ---
 

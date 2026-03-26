@@ -10,7 +10,9 @@
 
 The system is built using the **Next.js 16** full-stack React framework with **TypeScript** for type-safe development, **Tailwind CSS 4** and **ShadCN UI** for a responsive and aesthetically modern user interface, and **Appwrite Cloud** as the Backend-as-a-Service (BaaS) for authentication, database, and file storage operations.
 
-Key features of StoreIt include **passwordless email OTP authentication**, **drag-and-drop file upload** (supporting documents, images, videos, audio, and other file types up to 50 MB each), **automatic file categorization** based on file extensions, **real-time debounced search** with instant results, **multi-criteria file sorting**, **file sharing via email**, and a **comprehensive interactive dashboard** with storage usage analytics presented through visual charts. Each user is allocated **2 GB of free cloud storage**.
+Key features of StoreIt include **passwordless email OTP authentication**, **drag-and-drop file upload** (supporting documents, images, videos, audio, and other file types up to 50 MB each), **automatic file categorization**, and a **premium administrative control panel**. The admin portal provides **privacy-preserving global storage analytics**, identifying trends without compromising individual user file access. It also includes comprehensive **user moderation tools** for account activation and blocking.
+
+The system follows a **Two-Theme Administrative Design**: a modern indigo-themed user interface for storage tasks and a specialized light-red themed portal for administrative oversight. Both interfaces are built with premium aesthetics, subtle animations, and glassmorphism effects.
 
 The application follows the **Three-Tier Architecture** pattern, separating concerns across the Presentation Layer (React/Next.js), Application Logic Layer (Next.js Server Actions), and Data Layer (Appwrite Cloud). Security is enforced through HTTP-only secure cookies, server-side API access, input validation via Zod schemas, and OTP-based passwordless authentication.
 
@@ -44,8 +46,9 @@ The primary objectives of this project are to:
 1. Design and develop a fully functional cloud-based document storage system.
 2. Implement secure passwordless authentication using email OTP.
 3. Provide automatic file categorization, real-time search, and comprehensive file management.
-4. Build a responsive, modern, and visually appealing user interface.
-5. Deploy the application on a cloud platform for worldwide accessibility.
+4. Build a responsive, modern, and visually appealing user interface with distinct administrative and user themes.
+5. Develop a privacy-safe administrative portal for platform-wide storage monitoring and user moderation.
+6. Deploy the application on a cloud platform for worldwide accessibility.
 6. Document the complete development process for academic submission.
 
 ---
@@ -99,9 +102,15 @@ StoreIt was developed following the **Incremental Development Model**, where the
 - Multi-criteria sorting (date, name, size)
 - Dynamic category pages with file card grid
 
-**Phase 6 — Polish, Testing & Deployment:**
+**Phase 6 — Administrative Portal (New):**
+- Admin-only password authentication module
+- Global storage aggregation and system health monitoring
+- User management table with real-time status toggling (Block/Unblock)
+- Privacy layer to restrict admin access to binary file content
+
+**Phase 7 — Polish, Testing & Deployment:**
 - Comprehensive testing (unit, integration, system, security)
-- UI refinements, responsive design verification
+- UI refinements (premium light theme across all portals)
 - Deployment to Vercel with Appwrite Cloud
 
 ### Technologies Used
@@ -140,13 +149,15 @@ The StoreIt project successfully achieved all defined objectives:
 
 6. **Comprehensive File Management:** All CRUD operations (Upload, Rename, Download, Share, View Details, Delete) function correctly with appropriate confirmation dialogs and error handling.
 
-7. **Responsive Design:** The application is fully responsive across desktop (1920px), tablet (768px), and mobile (375px) viewports, with a dedicated mobile navigation experience.
+7. **Administrative Governance:** A secure Admin Portal was successfully implemented, allowing for global storage monitoring across all users and real-time account status management (blocking/unblocking) while maintaining strict data privacy protocols.
 
-8. **Security Compliance:** All security measures — HTTP-only cookies, server-side actions, input validation, OTP authentication — function as designed, passing all security test cases.
+8. **Responsive Design:** The application is fully responsive across desktop (1920px), tablet (768px), and mobile (375px) viewports, with a dedicated mobile navigation for both user and admin portals.
 
-9. **Performance:** Pages load within 2–3 seconds on standard broadband connections, with server-side rendering providing fast initial content delivery.
+9. **Security Compliance:** All security measures — HTTP-only cookies, admin label verification, server-side actions, and OTP authentication — function as designed, passing 50+ test cases.
 
-10. **Deployment:** The application is deployed on Vercel and is accessible worldwide via a public URL.
+10. **Performance:** Pages load within 2–3 seconds on standard broadband connections, with server-side rendering providing fast initial content delivery.
+
+11. **Deployment:** The application is deployed on Vercel and is accessible worldwide via a public URL.
 
 ---
 
@@ -169,15 +180,15 @@ StoreIt serves as a strong foundation for future enhancements and demonstrates t
 | # | Enhancement | Description |
 |---|------------|-------------|
 | 1 | **File Versioning** | Implement version history for files, allowing users to revert to previous versions |
-| 2 | **Collaborative Editing** | Integrate real-time collaborative document editing (e.g., using operational transforms) |
-| 3 | **Admin Dashboard** | Build an admin panel for system-wide user management, usage monitoring, and reporting |
-| 4 | **Premium Storage Plans** | Implement subscription tiers (5 GB, 50 GB, 100 GB) with payment gateway integration |
-| 5 | **Offline Mode** | Add Service Worker-based offline caching for viewing previously accessed files |
-| 6 | **Folder Organization** | Enable users to create folders and sub-folders for hierarchical file organization |
-| 7 | **File Preview** | Add in-browser preview support for PDFs, images, videos, and audio files |
-| 8 | **Two-Factor Authentication** | Add optional TOTP-based 2FA as an additional security layer |
-| 9 | **Drag-and-Drop Reorganization** | Allow users to drag files between folders and categories |
-| 10 | **Mobile Native App** | Develop React Native or Flutter mobile applications for iOS and Android |
+| 2 | **Collaborative Editing** | Integrate real-time collaborative document editing |
+| 3 | **Advanced Admin Roles**| Granular permissions for admin teams (e.g., support vs. super-admin) |
+| 4 | **Premium Storage Plans** | Implement subscription tiers with payment gateway integration |
+| 5 | **Offline Mode** | Add Service Worker-based offline caching for viewing files |
+| 6 | **Folder Organization** | Enable hierarchical file organization via folders and labels |
+| 7 | **In-Browser Preview** | Add rich preview support for various file formats powered by specialized viewers |
+| 8 | **Two-Factor Auth** | Add TOTP-based 2FA for enhanced administrative and user security |
+| 9 | **AI Search & OCR** | Implement AI-based content analysis and Optical Character Recognition (OCR) for PDFs |
+| 10 | **Mobile Native App** | Develop React Native mobile applications for iOS and Android |
 | 11 | **Automated Backups** | Implement scheduled automatic backups of user data |
 | 12 | **File Compression** | Add optional file compression to optimize storage utilization |
 | 13 | **AI-Powered Search** | Implement AI-based search using file content analysis and metadata extraction |

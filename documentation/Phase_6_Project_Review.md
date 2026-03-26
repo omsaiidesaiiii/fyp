@@ -70,10 +70,18 @@ The StoreIt application was demonstrated as a fully functional cloud-based docum
     - The mobile navigation sheet was demonstrated with smooth slide-in animation.
     - All features (upload, search, file actions) were shown to work correctly on mobile.
 
-11. **Sign Out:**
-    - Clicked the Sign Out button.
-    - Session was destroyed, cookie was cleared, and the user was redirected to the Sign In page.
-    - Attempted to access the Dashboard URL directly — was automatically redirected to Sign In.
+11. **Admin Panel Walkthrough (New):**
+    - Navigated to `/admin-login` to access the administrative portal.
+    - Logged in with admin email and password (different from user OTP flow).
+    - Demonstrated the **Admin Dashboard** featuring "Platform Health" metrics, including total users, total files, and system-wide storage breakdown.
+    - Walked through the **User Management** section, showing the searchable list of all platform users.
+    - Demonstrated **User Moderation** by blocking a test account (setting isActive=false) and then unblocking it.
+    - Verified that administrative access is restricted to users with the "admin" label badge.
+
+12. **Sign Out:**
+    - Clicked the Sign Out button in both User and Admin portals.
+    - Session was destroyed, cookie was cleared, and the user was redirected to the appropriate login page.
+    - Attempted to access protected URLs directly — verified automatic redirection to sign-in.
 
 ---
 
@@ -94,7 +102,10 @@ The StoreIt application was demonstrated as a fully functional cloud-based docum
 | 11 | File Details Modal | Viewed complete metadata of uploaded files |
 | 12 | Responsive Mobile Design | Full mobile walkthrough with hamburger menu |
 | 13 | Session Security | Demonstrated redirect on expired/missing session |
-| 14 | OTP Resend with Cooldown | Showed 60-second timer and resend functionality |
+| 14 | Administrative Control | Global platform analytics and health monitoring |
+| 15 | User Moderation | Real-time blocking and unblocking of user accounts |
+| 16 | Admin RBAC | Verified that regular users cannot access administrative actions |
+| 17 | OTP Resend with Cooldown | Showed 60-second timer and resend functionality |
 
 ---
 
@@ -121,7 +132,11 @@ The StoreIt application was demonstrated as a fully functional cloud-based docum
 | 17 | Mobile Navigation (Sheet) | Slide-in sheet with navigation links and user profile |
 | 18 | Mobile Dashboard | Stacked single-column layout for mobile viewports |
 | 19 | Empty State (No Files) | Friendly empty state message with icon |
-| 20 | Error State (Invalid OTP) | Red error text below OTP input |
+| 20 | Admin Portal Login | Specialized login page with red-accented branding |
+| 21 | Admin Dashboard | Platform-wide analytics grid and storage breakdown cards |
+| 22 | User Moderation View | Searchable table with account status toggles and user stats |
+| 23 | Error State (Invalid OTP) | Red error text below OTP input |
+| 24 | Error State (Admin Denied) | Permission error visual when non-admin attempts login |
 
 ---
 

@@ -22,6 +22,7 @@ Currently, users rely on the following methods for file storage and management:
 
 1. **Local Storage (Hard Drives, USB Drives):** Files are stored on physical devices. Access is limited to the device on which files are stored. Risk of data loss due to hardware failure, theft, or corruption.
 
+
 2. **Email Attachments:** Users often email files to themselves for backup or sharing purposes. This method is highly inefficient, has file size limitations (typically 25 MB), and results in disorganized file management.
 
 3. **Existing Cloud Services (Google Drive, Dropbox, OneDrive):** While functional, these platforms have complex interfaces, bundled features that many users do not need, and often require paid subscriptions for meaningful storage capacity. They also require traditional password-based authentication.

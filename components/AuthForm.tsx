@@ -24,10 +24,10 @@ type FormType = "sign-in" | "sign-up";
 
 const authFormSchema = (formType: FormType) => {
   return z.object({
-    email: z.string().email(),
+    email: z.string().email("Please enter a valid email address"),
     fullName:
       formType === "sign-up"
-        ? z.string().min(2).max(50)
+        ? z.string().min(2, "Full name must be at least 2 characters")
         : z.string().optional(),
   });
 };
@@ -35,9 +35,10 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId, setAccountId] = useState(null);
+  const [accountId, setAccountId] = useState<string | null>(null);
 
   const formSchema = authFormSchema(type);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,7 +52,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
     setErrorMessage("");
 
     try {
-      const user =
+      const response =
         type === "sign-up"
           ? await createAccount({
               fullName: values.fullName || "",
@@ -59,9 +60,25 @@ const AuthForm = ({ type }: { type: FormType }) => {
             })
           : await signInUser({ email: values.email });
 
-      setAccountId(user.accountId);
-    } catch {
-      setErrorMessage("Failed to create account. Please try again.");
+      // 🔴 Handle "User not found" or null accountId
+      if (!response?.accountId) {
+        setErrorMessage(
+          type === "sign-in"
+            ? "Account not found. Please sign up first."
+            : "Something went wrong. Please try again."
+        );
+        return;
+      }
+
+      // ✅ If accountId exists → open OTP modal
+      setAccountId(response.accountId);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(
+        type === "sign-in"
+          ? "Failed to sign in. Please try again."
+          : "Failed to create account. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -70,14 +87,19 @@ const AuthForm = ({ type }: { type: FormType }) => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form flex flex-col gap-5 w-full">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="auth-form flex flex-col gap-5 w-full"
+        >
           <div className="flex flex-col items-start mb-6">
             <h1 className="text-3xl font-bold tracking-tight text-dark-100">
               {type === "sign-in" ? "Welcome Back" : "Get Started"}
             </h1>
-             <p className="text-gray-500 mt-2">
-               {type === "sign-in" ? "Enter your email to access your account" : "Create an account to start storing your files"}
-             </p>
+            <p className="text-gray-500 mt-2">
+              {type === "sign-in"
+                ? "Enter your email to access your account"
+                : "Create an account to start storing your files"}
+            </p>
           </div>
 
           {type === "sign-up" && (
@@ -86,15 +108,16 @@ const AuthForm = ({ type }: { type: FormType }) => {
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="block text-sm font-medium mb-1 text-gray-700">Full Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter your full name"
-                        className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
-                        {...field}
-                      />
-                    </FormControl>
-
+                  <FormLabel className="block text-sm font-medium mb-1 text-gray-700">
+                    Full Name
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your full name"
+                      className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage className="text-red-500 text-xs mt-1" />
                 </FormItem>
               )}
@@ -106,15 +129,16 @@ const AuthForm = ({ type }: { type: FormType }) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium mb-1 text-gray-700">Email Address</FormLabel>
+                <FormLabel className="block text-sm font-medium mb-1 text-gray-700">
+                  Email Address
+                </FormLabel>
                 <FormControl>
-                    <Input
-                      placeholder="Enter your email"
-                      className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
-                      {...field}
-                    />
+                  <Input
+                    placeholder="Enter your email"
+                    className="text-sm w-full h-[45px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white text-black transition-all"
+                    {...field}
+                  />
                 </FormControl>
-
                 <FormMessage className="text-red-500 text-xs mt-1" />
               </FormItem>
             )}
@@ -139,9 +163,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
           </Button>
 
           {errorMessage && (
-             <div className="p-3 bg-red-50 border border-red-100 rounded-lg">
-                <p className="text-red-500 text-sm text-center font-medium">*{errorMessage}</p>
-             </div>
+            <div className="p-3 bg-red-50 border border-red-100 rounded-lg">
+              <p className="text-red-500 text-sm text-center font-medium">
+                {errorMessage}
+              </p>
+            </div>
           )}
 
           <div className="text-center text-gray-600 text-sm mt-4">
@@ -160,8 +186,12 @@ const AuthForm = ({ type }: { type: FormType }) => {
         </form>
       </Form>
 
+      {/* ✅ OTP Modal only appears if accountId exists */}
       {accountId && (
-        <OtpModal email={form.getValues("email")} accountId={accountId} />
+        <OtpModal
+          email={form.getValues("email")}
+          accountId={accountId}
+        />
       )}
     </>
   );

@@ -120,6 +120,9 @@ await databases.createDocument(..., fileDocument);
 | 5 | Images | `app/(root)/[type]/page.tsx` (type=images) | Images file listing |
 | 6 | Media | `app/(root)/[type]/page.tsx` (type=media) | Video/Audio file listing |
 | 7 | Others | `app/(root)/[type]/page.tsx` (type=others) | Other files listing |
+| 8 | Admin Login | `app/(admin-auth)/admin-login/page.tsx` | Specialized admin sign-in |
+| 9 | Admin Dashboard | `app/(admin)/admin/page.tsx` | Platform-wide storage analytics |
+| 10 | User Management | `app/(admin)/admin/users/page.tsx` | Admin tools for account moderation |
 
 ### Forms Created
 
@@ -127,6 +130,7 @@ await databases.createDocument(..., fileDocument);
 |------|-----------|--------|------------|
 | Sign Up Form | `AuthForm.tsx` | Full Name (min 2, max 50 chars), Email (valid format) | Zod schema with zodResolver |
 | Sign In Form | `AuthForm.tsx` | Email (valid format) | Zod schema with zodResolver |
+| Admin Login Form | `AdminLoginForm.tsx` | Email, Password | Zod schema validation |
 | OTP Form | `OTPModal.tsx` | 6-digit OTP code | Input length validation |
 | Rename Form | `ActionDropdown.tsx` | New file name | Non-empty validation |
 | Share Form | `ActionsModalContent.tsx` | Email addresses | Array of email strings |
@@ -181,6 +185,7 @@ All backend logic is implemented using **Next.js Server Actions** (files marked 
 |------|---------|
 | `lib/actions/user.actions.ts` | User authentication, registration, session management |
 | `lib/actions/file.actions.ts` | File CRUD operations, storage calculations |
+| `lib/actions/admin.actions.ts` | Admin dashboard stats, user moderation, admin auth |
 | `lib/appwrite/index.ts` | Appwrite Client initialization (Session & Admin) |
 | `lib/appwrite/config.ts` | Environment variable configuration |
 
@@ -204,7 +209,10 @@ Two types of Appwrite clients are used:
 | **Update** File Name | `renameFile()` | Updates file's name field |
 | **Update** File Users | `updateFileUsers()` | Updates shared users array |
 | **Delete** File | `deleteFile()` | Removes document + storage file |
-| **Read** Storage Stats | `getTotalSpaceUsed()` | Calculates per-category storage usage |
+| **Read** Storage Stats | `getTotalSpaceUsed()` | Calculates per-category storage usage (User) |
+| **Read** Platform Stats | `getAdminDashboardData()`| Aggregates global storage across all users (Admin)|
+| **Update** User Status | `toggleUserStatus()` | Blocks or unblocks a specific user account (Admin)|
+| **Read** All Users | `getAllUsers()` | Fetches list of all platform users (Admin) |
 
 ### Business Logic
 
