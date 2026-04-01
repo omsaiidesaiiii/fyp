@@ -11,7 +11,7 @@
       "src": "/assets/icons/logo-brand.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     },
     {
       "src": "/assets/icons/icon-192.png",
