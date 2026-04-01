@@ -12,10 +12,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  themeColor: "#FA7275",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "FileVault",
-  description: "Store and manage your files with FileVault.",
+  description: "Store and manage your files securely with FileVault.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "FileVault",
+  },
+  icons: {
+    apple: "/assets/icons/icon-192.png",
+  },
 };
+
+
+
 
 export default function RootLayout({
   children,
