@@ -10,7 +10,7 @@ const handleError = (error: unknown, message: string) => {
   throw error;
 };
 
-export type ExpiryType = "1h" | "1d" | "permanent";
+export type ExpiryType = "1h" | "1d" | "30d" | "permanent";
 
 export const getLatestShare = async (fileId: string) => {
   try {
@@ -33,7 +33,7 @@ export const getLatestShare = async (fileId: string) => {
   }
 }
 
-export const createShareLink = async ({ fileId, expiry = "1h" }: { fileId: string, expiry?: ExpiryType }) => {
+export const createShareLink = async ({ fileId, expiry = "30d" }: { fileId: string, expiry?: ExpiryType }) => {
   try {
     const { databases, account } = await createSessionClient();
     const user = await account.get();
@@ -45,6 +45,8 @@ export const createShareLink = async ({ fileId, expiry = "1h" }: { fileId: strin
       expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
     } else if (expiry === "1d") {
       expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    } else if (expiry === "30d") {
+      expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     } else {
       // Permanent link, far future
       expiresAt = new Date("2099-12-31T23:59:59Z").toISOString();

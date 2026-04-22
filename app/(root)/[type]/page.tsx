@@ -3,7 +3,7 @@ import Sort from "@/components/Sort";
 import { getFiles } from "@/lib/actions/file.actions";
 import { Models } from "node-appwrite";
 import Card from "@/components/Card";
-import { getFileTypesParams } from "@/lib/utils";
+import { getFileTypesParams, convertFileSize } from "@/lib/utils";
 
 const Page = async ({ searchParams, params }: SearchParamProps) => {
   const type = ((await params)?.type as string) || "";
@@ -20,7 +20,7 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
         <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold capitalize text-dark-100">{type}</h1>
             <div className="hidden sm:block">
-               <span className="text-gray-400 text-sm font-medium">Total: <span className="text-dark-100 font-bold ml-1">0 MB</span> (Placeholder)</span>
+               <span className="text-gray-400 text-sm font-medium">Total: <span className="text-dark-100 font-bold ml-1">{convertFileSize(files.documents.reduce((acc: number, file: Models.Document) => acc + file.size, 0))}</span></span>
             </div>
         </div>
 

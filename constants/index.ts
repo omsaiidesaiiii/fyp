@@ -43,11 +43,6 @@ export const actionsDropdownItems = [
     value: "share",
   },
   {
-    label: "Share / WhatsApp",
-    icon: "/assets/icons/share.svg",
-    value: "whatsapp-share",
-  },
-  {
     label: "Download",
     icon: "/assets/icons/download.svg",
     value: "download",

@@ -29,7 +29,7 @@ import {
   updateFileUsers,
 } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
-import { FileDetails, ShareInput, WhatsAppShare } from "@/components/ActionsModalContent";
+import { FileDetails, ShareModal } from "@/components/ActionsModalContent";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,7 +88,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     const { value, label } = action;
 
     return (
-      <DialogContent className="shad-dialog button">
+      <DialogContent className="shad-dialog button sm:max-w-lg w-[95vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6 rounded-2xl">
         <DialogHeader className="flex flex-col gap-3">
           <DialogTitle className="text-center text-light-100">
             {label}
@@ -102,13 +102,12 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           )}
           {value === "details" && <FileDetails file={file} />}
           {value === "share" && (
-            <ShareInput
+            <ShareModal
               file={file}
               onInputChange={setEmails}
               onRemove={handleRemoveUser}
             />
           )}
-          {value === "whatsapp-share" && <WhatsAppShare file={file} />}
           {value === "delete" && (
             <p className="delete-confirmation">
               Are you sure you want to delete{` `}
@@ -122,7 +121,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
               Cancel
             </Button>
             <Button onClick={handleAction} className={`h-11 rounded-full text-white shadow-md transition-all font-medium px-6 flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-2 outline-none ${value === 'delete' ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500' : 'bg-brand hover:bg-brand-100 focus:ring-brand'}`}>
-              <p className="capitalize">{value}</p>
+              <p className="capitalize">{value === "share" ? "Done" : value}</p>
               {isLoading && (
                 <Image
                   src="/assets/icons/loader.svg"
@@ -163,7 +162,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                 setAction(actionItem);
 
                 if (
-                  ["rename", "share", "delete", "details", "whatsapp-share"].includes(
+                  ["rename", "share", "delete", "details"].includes(
                     actionItem.value,
                   )
                 ) {
