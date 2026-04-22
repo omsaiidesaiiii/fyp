@@ -19,6 +19,10 @@ export async function GET(
     return new NextResponse("Invalid share link", { status: 404 });
   }
 
+  if (share.isRevoked) {
+    return new NextResponse("Share link has been revoked", { status: 403 });
+  }
+
   const expiresAt = new Date(share.expiresAt);
   if (expiresAt < new Date()) {
     return new NextResponse("Share link has expired", { status: 410 });
