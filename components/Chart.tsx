@@ -29,7 +29,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export const Chart = ({ used = 0 }: { used: number }) => {
-  const chartData = [{ storage: "used", 10: used, fill: "#FA7275" }];
+  const chartData = [{ storage: used, fill: "#FA7275" }];
 
   return (
     <div className="flex items-center justify-between gap-6 w-full md:flex-row flex-col-reverse">

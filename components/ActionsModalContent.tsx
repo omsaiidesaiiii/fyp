@@ -119,21 +119,19 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
   const isPermanent = activeShare?.expiresAt?.startsWith("2099");
 
   return (
-    <>
+    <div className="space-y-6">
       <ImageThumbnail file={file} />
 
-      <div className="mt-6 space-y-6">
+      <div className="space-y-6">
         {/* Email Sharing Section */}
         <div className="space-y-3">
           <p className="text-sm font-semibold text-gray-800">Share with people</p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Input
-              type="email"
-              placeholder="Add email addresses (comma separated)"
-              onChange={(e) => onInputChange(e.target.value.trim().split(","))}
-              className="h-11 rounded-lg border-gray-200 bg-gray-50 focus-visible:ring-brand shadow-sm text-sm w-full"
-            />
-          </div>
+          <Input
+            type="email"
+            placeholder="Add email addresses (comma separated)"
+            onChange={(e) => onInputChange(e.target.value.trim().split(","))}
+            className="h-11 rounded-lg border-gray-200 bg-gray-50 focus-visible:ring-brand shadow-sm text-sm w-full"
+          />
           
           {file.users.length > 0 && (
             <div className="pt-2">
@@ -144,12 +142,12 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
                     key={email}
                     className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50/50"
                   >
-                    <p className="text-sm text-gray-700 font-medium">{email}</p>
+                    <p className="text-sm text-gray-700 font-medium truncate flex-1 min-w-0">{email}</p>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => onRemove(email)}
-                      className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                      className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
                     >
                       <Image src="/assets/icons/remove.svg" alt="Remove" width={16} height={16} />
                     </Button>
@@ -165,7 +163,7 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <p className="text-sm font-semibold text-gray-800">Get link</p>
             {shareLink && activeShare?.expiresAt && (
-              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wider bg-gray-100/80 px-2 py-0.5 rounded-sm w-fit">
+              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wider bg-gray-100/80 px-2 py-0.5 rounded-sm w-fit shrink-0">
                 {formatExpiry(activeShare.expiresAt)}
               </p>
             )}
@@ -175,13 +173,13 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
             <div className="h-11 w-full bg-gray-100 animate-pulse rounded-xl" />
           ) : shareLink ? (
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-center">
-                <div className="w-full sm:flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 flex items-center shadow-sm overflow-hidden">
+              <div className="flex flex-col sm:flex-row gap-3 items-center">
+                <div className="w-full flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 flex items-center shadow-sm overflow-hidden min-w-0">
                   <p className="text-[13px] text-gray-600 truncate w-full font-mono">{shareLink}</p>
                 </div>
                 <Button 
                   onClick={handleCopyLink} 
-                  className={`${isCopied ? 'bg-gray-800 hover:bg-gray-900 text-white' : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'} h-[42px] px-5 w-full sm:w-auto rounded-lg font-medium shadow-sm transition-colors flex-shrink-0`}
+                  className={`${isCopied ? 'bg-gray-800 hover:bg-gray-900 text-white' : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'} h-[42px] px-5 w-full sm:w-auto rounded-lg font-medium shadow-sm transition-colors shrink-0`}
                 >
                   {isCopied ? 'Copied' : 'Copy'}
                 </Button>
@@ -191,7 +189,7 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
                 href={`https://wa.me/?text=${encodeURIComponent(`Here is a secure link to download "${file.name}":\n\n${shareLink}\n\n*Note: ${activeShare?.expiresAt ? formatExpiry(activeShare.expiresAt) : ''}.*`)}`} 
                 target="_blank" 
                 rel="noreferrer"
-                className="bg-[#25D366] hover:bg-[#22bf5b] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm mt-1"
+                className="bg-[#25D366] hover:bg-[#22bf5b] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm"
               >
                 <Image src="/assets/icons/share.svg" width={16} height={16} alt="WhatsApp" className="brightness-0 invert opacity-90" />
                 Share on WhatsApp
@@ -202,6 +200,6 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };

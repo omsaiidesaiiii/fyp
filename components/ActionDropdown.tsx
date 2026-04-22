@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DialogDescription } from "@/components/ui/dialog";
 import { useState } from "react";
 import Image from "next/image";
 import { Models } from "node-appwrite";
@@ -88,11 +89,17 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     const { value, label } = action;
 
     return (
-      <DialogContent className="shad-dialog button sm:max-w-lg w-[95vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6 rounded-2xl">
-        <DialogHeader className="flex flex-col gap-3">
+      <DialogContent className="shad-dialog sm:max-w-lg xl:max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 rounded-xl bg-white shadow-lg focus-visible:outline-none">
+        <DialogHeader className="flex flex-col gap-3 p-4 sm:p-6 border-b border-gray-100 shrink-0">
           <DialogTitle className="text-center text-light-100">
             {label}
           </DialogTitle>
+          <DialogDescription className="hidden">
+            {label} dialog
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="overflow-y-auto p-4 sm:p-6 flex-1 w-full space-y-6">
           {value === "rename" && (
             <Input
               type="text"
@@ -111,16 +118,17 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           {value === "delete" && (
             <p className="delete-confirmation">
               Are you sure you want to delete{` `}
-              <span className="delete-file-name">{file.name}</span>?
+              <span className="delete-file-name font-bold break-all">{file.name}</span>?
             </p>
           )}
-        </DialogHeader>
+        </div>
+
         {["rename", "delete", "share"].includes(value) && (
-          <DialogFooter className="flex flex-col gap-3 md:flex-row">
-            <Button onClick={closeAllModals} className="h-11 rounded-full bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all font-medium px-6">
+          <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:justify-end p-4 sm:p-6 border-t border-gray-100 shrink-0">
+            <Button onClick={closeAllModals} className="h-11 rounded-lg bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all font-medium px-6 w-full sm:w-auto">
               Cancel
             </Button>
-            <Button onClick={handleAction} className={`h-11 rounded-full text-white shadow-md transition-all font-medium px-6 flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-2 outline-none ${value === 'delete' ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500' : 'bg-brand hover:bg-brand-100 focus:ring-brand'}`}>
+            <Button onClick={handleAction} className={`h-11 rounded-lg text-white shadow-md transition-all font-medium px-6 flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-2 outline-none w-full sm:w-auto ${value === 'delete' ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500' : 'bg-brand hover:bg-brand-100 focus:ring-brand'}`}>
               <p className="capitalize">{value === "share" ? "Done" : value}</p>
               {isLoading && (
                 <Image

@@ -64,10 +64,10 @@ const Dashboard = async () => {
 
                  <div className="space-y-1">
                     <h5 className="font-semibold text-gray-500 group-hover:text-brand transition-colors">{summary.title}</h5>
-                    <p className="text-xs text-gray-400 flex items-center gap-1">
+                    <div className="text-xs text-gray-400 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         <FormattedDateTime date={summary.latestDate} className="inline" />
-                    </p>
+                    </div>
                  </div>
               </div>
               
