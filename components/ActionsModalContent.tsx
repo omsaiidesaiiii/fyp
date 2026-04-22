@@ -6,6 +6,9 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useState } from "react";
+import { createShareLink } from "@/lib/actions/share.actions";
+import { Loader2 } from "lucide-react";
 
 const ImageThumbnail = ({ file }: { file: Models.Document }) => (
   <div className="file-details-thumbnail">
@@ -90,6 +93,67 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
             ))}
           </ul>
         </div>
+      </div>
+    </>
+  );
+};
+
+export const WhatsAppShare = ({ file }: { file: Models.Document }) => {
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGenerateLink = async () => {
+    setIsLoading(true);
+    try {
+      const response = await createShareLink({ fileId: file.$id });
+      if (response && response.url) {
+        setShareLink(`${window.location.origin}${response.url}`);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (shareLink) {
+      navigator.clipboard.writeText(shareLink);
+    }
+  };
+
+  return (
+    <>
+      <ImageThumbnail file={file} />
+      <div className="share-wrapper flex flex-col gap-4 pt-4">
+        {!shareLink ? (
+          <Button onClick={handleGenerateLink} disabled={isLoading} className="bg-brand hover:bg-brand-100 flex items-center justify-center h-12 w-full rounded-full">
+            {isLoading ? <Loader2 className="animate-spin text-white" /> : "Generate Secure Link"}
+          </Button>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-2">
+              <Input value={shareLink} readOnly className="share-input-field flex-1 text-sm bg-gray-50 text-gray-500" />
+              <Button onClick={handleCopyLink} className="bg-brand hover:bg-brand-100 h-12 px-6 rounded-full flex items-center justify-center">
+                Copy
+              </Button>
+            </div>
+            
+            <a 
+              href={`https://wa.me/?text=${encodeURIComponent(`Here is a secure link to download "${file.name}":\n\n${shareLink}\n\n*Note: This link expires in 1 hour.*`)}`} 
+              target="_blank" 
+              rel="noreferrer"
+              className="bg-[#25D366] hover:bg-[#20b858] text-white flex items-center justify-center gap-2 h-12 rounded-full font-medium transition-all"
+            >
+              <Image src="/assets/icons/share.svg" width={20} height={20} alt="WhatsApp" className="brightness-0 invert" />
+              Share on WhatsApp
+            </a>
+            
+            <p className="text-center text-xs text-gray-400">
+              This link is secure and will expire in 1 hour.
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

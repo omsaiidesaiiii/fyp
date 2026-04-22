@@ -29,7 +29,7 @@ import {
   updateFileUsers,
 } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
-import { FileDetails, ShareInput } from "@/components/ActionsModalContent";
+import { FileDetails, ShareInput, WhatsAppShare } from "@/components/ActionsModalContent";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,6 +108,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
               onRemove={handleRemoveUser}
             />
           )}
+          {value === "whatsapp-share" && <WhatsAppShare file={file} />}
           {value === "delete" && (
             <p className="delete-confirmation">
               Are you sure you want to delete{` `}
@@ -162,7 +163,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                 setAction(actionItem);
 
                 if (
-                  ["rename", "share", "delete", "details"].includes(
+                  ["rename", "share", "delete", "details", "whatsapp-share"].includes(
                     actionItem.value,
                   )
                 ) {
