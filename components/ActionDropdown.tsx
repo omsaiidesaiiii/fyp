@@ -92,7 +92,10 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     const { value, label } = action;
 
     return (
-      <DialogContent className="shad-dialog sm:max-w-lg xl:max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 rounded-xl bg-white shadow-lg focus-visible:outline-none">
+      <DialogContent 
+        className="shad-dialog sm:max-w-lg xl:max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 rounded-xl bg-white shadow-lg focus-visible:outline-none"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader className="flex flex-col gap-3 p-4 sm:p-6 border-b border-gray-100 shrink-0">
           <DialogTitle className="text-center text-light-100">
             {label}
