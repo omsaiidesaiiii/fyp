@@ -185,15 +185,27 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
                 </Button>
               </div>
               
-              <a 
-                href={`https://wa.me/?text=${encodeURIComponent(`Here is a secure link to download "${file.name}":\n\n${shareLink}\n\n*Note: ${activeShare?.expiresAt ? formatExpiry(activeShare.expiresAt) : ''}.*`)}`} 
-                target="_blank" 
-                rel="noreferrer"
-                className="bg-[#25D366] hover:bg-[#22bf5b] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm"
-              >
-                <Image src="/assets/icons/share.svg" width={16} height={16} alt="WhatsApp" className="brightness-0 invert opacity-90" />
-                Share on WhatsApp
-              </a>
+              <div className="flex flex-col gap-2">
+                <a 
+                  href={`https://wa.me/?text=${encodeURIComponent(`Here is a secure link to download "${file.name}":\n\n${shareLink}\n\n*Note: ${activeShare?.expiresAt ? formatExpiry(activeShare.expiresAt) : ''}.*`)}`} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#25D366] hover:bg-[#22bf5b] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm"
+                >
+                  <Image src="/assets/icons/whatsapp.svg" width={16} height={16} alt="WhatsApp" className="opacity-90" />
+                  Share on WhatsApp
+                </a>
+
+                <a 
+                  href={`https://t.me/share/url?url=${encodeURIComponent(shareLink!)}&text=${encodeURIComponent(`Here is a secure link to download "${file.name}"`)}`} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#229ED9] hover:bg-[#1c8ac7] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm"
+                >
+                  <Image src="/assets/icons/telegram.svg" width={16} height={16} alt="Telegram" className="opacity-90" />
+                  Share on Telegram
+                </a>
+              </div>
             </div>
           ) : (
             <p className="text-sm text-red-500">Failed to generate link. Please try again.</p>
