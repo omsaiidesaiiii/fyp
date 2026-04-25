@@ -63,11 +63,14 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
         deleteFile({ fileId: file.$id, bucketFileId: file.bucketFileId, path }),
     };
 
-    success = await actions[action.value as keyof typeof actions]();
-
-    if (success) closeAllModals();
-
-    setIsLoading(false);
+    try {
+        success = await actions[action.value as keyof typeof actions]();
+        if (success) closeAllModals();
+    } catch (error) {
+        console.error("Action failed:", error);
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   const handleRemoveUser = async (email: string) => {

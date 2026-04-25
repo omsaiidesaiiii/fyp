@@ -4,6 +4,7 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { appwriteConfig } from "@/lib/appwrite/config";
 import { parseStringify } from "@/lib/utils";
+import crypto from "crypto";
 
 const handleError = (error: unknown, message: string) => {
   console.log(error, message);
@@ -38,7 +39,7 @@ export const createShareLink = async ({ fileId, expiry = "30d" }: { fileId: stri
     const { databases, account } = await createSessionClient();
     const user = await account.get();
 
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const token = crypto.randomBytes(16).toString("hex");
     
     let expiresAt: string;
     if (expiry === "1h") {

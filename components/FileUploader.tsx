@@ -44,15 +44,26 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
           });
         }
 
-        return uploadFile({ file, ownerId, accountId, path }).then(
-          (uploadedFile) => {
+        return uploadFile({ file, ownerId, accountId, path })
+          .then((uploadedFile) => {
             if (uploadedFile) {
               setFiles((prevFiles) =>
                 prevFiles.filter((f) => f.name !== file.name),
               );
             }
-          },
-        );
+          })
+          .catch((error) => {
+            console.error(`Failed to upload ${file.name}:`, error);
+            setFiles((prevFiles) => prevFiles.filter((f) => f.name !== file.name));
+            toast({
+              description: (
+                <p className="body-2 text-white">
+                  Failed to upload <span className="font-semibold">{file.name}</span>.
+                </p>
+              ),
+              className: "error-toast",
+            });
+          });
       });
 
       await Promise.all(uploadPromises);

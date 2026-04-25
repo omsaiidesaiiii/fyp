@@ -127,6 +127,15 @@ export const renameFile = async ({
   const { databases } = await createAdminClient();
 
   try {
+    const currentUser = await getCurrentUser();
+    const file = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+    );
+
+    if (file.owner !== currentUser.$id) throw new Error("Unauthorized");
+
     const newName = `${name}.${extension}`;
     const updatedFile = await databases.updateDocument(
       appwriteConfig.databaseId,
@@ -152,6 +161,15 @@ export const updateFileUsers = async ({
   const { databases } = await createAdminClient();
 
   try {
+    const currentUser = await getCurrentUser();
+    const file = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+    );
+
+    if (file.owner !== currentUser.$id) throw new Error("Unauthorized");
+
     const updatedFile = await databases.updateDocument(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
@@ -164,7 +182,7 @@ export const updateFileUsers = async ({
     revalidatePath(path);
     return parseStringify(updatedFile);
   } catch (error) {
-    handleError(error, "Failed to rename file");
+    handleError(error, "Failed to share file");
   }
 };
 
@@ -176,6 +194,15 @@ export const deleteFile = async ({
   const { databases, storage } = await createAdminClient();
 
   try {
+    const currentUser = await getCurrentUser();
+    const file = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+    );
+
+    if (file.owner !== currentUser.$id) throw new Error("Unauthorized");
+
     const deletedFile = await databases.deleteDocument(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
@@ -189,7 +216,7 @@ export const deleteFile = async ({
     revalidatePath(path);
     return parseStringify({ status: "success" });
   } catch (error) {
-    handleError(error, "Failed to rename file");
+    handleError(error, "Failed to delete file");
   }
 };
 
