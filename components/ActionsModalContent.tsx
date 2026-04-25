@@ -185,26 +185,45 @@ export const ShareModal = ({ file, onInputChange, onRemove }: Props) => {
                 </Button>
               </div>
               
-              <div className="flex flex-col gap-2">
-                <a 
-                  href={`https://wa.me/?text=${encodeURIComponent(`Here is a secure link to download "${file.name}":\n\n${shareLink}\n\n*Note: ${activeShare?.expiresAt ? formatExpiry(activeShare.expiresAt) : ''}.*`)}`} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="bg-[#25D366] hover:bg-[#22bf5b] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm"
-                >
-                  <Image src="/assets/icons/whatsapp.svg" width={16} height={16} alt="WhatsApp" className="opacity-90" />
-                  Share on WhatsApp
-                </a>
+              <div className="space-y-3 pt-2">
+                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Or share via</p>
+                <div className="flex items-center gap-5">
+                  <a 
+                    href={`https://wa.me/?text=${encodeURIComponent(`Here is a secure link to download "${file.name}":\n\n${shareLink}\n\n*Note: ${activeShare?.expiresAt ? formatExpiry(activeShare.expiresAt) : ''}.*`)}`} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="flex flex-col items-center gap-2 group transition-all"
+                  >
+                    <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm hover:bg-[#22bf5b] hover:shadow-lg hover:shadow-[#25D366]/25 transition-all duration-300 ease-out">
+                      <Image 
+                        src="/assets/icons/whatsapp.svg" 
+                        width={24} 
+                        height={24} 
+                        alt="WhatsApp" 
+                        className="brightness-0 invert transition-all duration-300"
+                      />
+                    </div>
+                    <span className="text-[11px] font-semibold text-gray-500 group-hover:text-gray-900 transition-colors">WhatsApp</span>
+                  </a>
 
-                <a 
-                  href={`https://t.me/share/url?url=${encodeURIComponent(shareLink!)}&text=${encodeURIComponent(`Here is a secure link to download "${file.name}"`)}`} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="bg-[#229ED9] hover:bg-[#1c8ac7] text-white flex items-center justify-center gap-2 h-11 w-full rounded-lg text-sm font-semibold transition-colors shadow-sm"
-                >
-                  <Image src="/assets/icons/telegram.svg" width={16} height={16} alt="Telegram" className="opacity-90" />
-                  Share on Telegram
-                </a>
+                  <a 
+                    href={`https://t.me/share/url?url=${encodeURIComponent(shareLink!)}&text=${encodeURIComponent(`Here is a secure link to download "${file.name}"`)}`} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="flex flex-col items-center gap-2 group transition-all"
+                  >
+                    <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-[#229ED9] text-white shadow-sm hover:bg-[#1c8ac7] hover:shadow-lg hover:shadow-[#229ED9]/25 transition-all duration-300 ease-out">
+                      <Image 
+                        src="/assets/icons/telegram.svg" 
+                        width={24} 
+                        height={24} 
+                        alt="Telegram" 
+                        className="brightness-0 invert transition-all duration-300"
+                      />
+                    </div>
+                    <span className="text-[11px] font-semibold text-gray-500 group-hover:text-gray-900 transition-colors">Telegram</span>
+                  </a>
+                </div>
               </div>
             </div>
           ) : (
