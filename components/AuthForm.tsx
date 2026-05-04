@@ -99,6 +99,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
               {type === "sign-in"
                 ? "Enter your email to access your account"
                 : "Create an account to start storing your files"}
+              <Link href="/admin-login" className="ml-2 text-xs font-semibold text-brand/60 hover:text-brand transition-all">
+                (Admin?)
+              </Link>
             </p>
           </div>
 

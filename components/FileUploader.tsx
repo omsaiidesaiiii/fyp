@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,11 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const path = usePathname();
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -81,78 +87,96 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   };
 
-  return (
-    <div {...getRootProps()} className="cursor-pointer">
-      <input {...getInputProps()} />
-      <Button type="button" className={cn("bg-brand hover:bg-brand-100 text-white font-medium h-11 rounded-full px-6 shadow-md transition-all gap-2 focus:ring-2 focus:ring-brand focus:ring-offset-2 outline-none", className)}>
-        <Image
-          src="/assets/icons/upload.svg"
-          alt="upload"
-          width={22}
-          height={22}
-          className="opacity-90"
-        />
-        <p>Upload</p>
-      </Button>
-      {files.length > 0 && (
-        <ul className="fixed bottom-10 right-10 z-[100] flex w-full max-w-[480px] flex-col gap-3 rounded-[20px] bg-white p-7 shadow-2xl border border-gray-100 animate-in slide-in-from-bottom-5 duration-300">
-          <h4 className="text-[18px] font-bold text-dark-100 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-brand animate-pulse" />
-            Uploading {files.length} {files.length === 1 ? 'file' : 'files'}
-          </h4>
+  // Upload progress panel — rendered via portal to escape parent overflow/stacking constraints
+  const uploadProgressPanel =
+    files.length > 0 && mounted
+      ? createPortal(
+          <ul className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[9999] flex w-[calc(100vw-3rem)] md:w-full max-w-[480px] max-h-[80vh] overflow-y-auto flex-col gap-3 rounded-[20px] bg-white p-7 shadow-2xl border border-gray-100 animate-in slide-in-from-bottom-5 duration-300 custom-scrollbar">
+            <h4 className="text-[18px] font-bold text-dark-100 flex items-center gap-2 sticky top-0 bg-white z-10 pb-2">
+              
+              Uploading {files.length}{" "}
+              {files.length === 1 ? "file" : "files"}
+            </h4>
 
-          {files.map((file, index) => {
-            const { type, extension } = getFileType(file.name);
+            {files.map((file, index) => {
+              const { type, extension } = getFileType(file.name);
 
-            return (
-              <li
-                key={`${file.name}-${index}`}
-                className="flex items-center justify-between gap-3 rounded-xl border border-gray-50 bg-gray-50/50 p-3"
-              >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <Thumbnail
-                    type={type}
-                    extension={extension}
-                    url={convertFileToUrl(file)}
-                    className="size-10 rounded-lg bg-white shadow-sm"
-                  />
+              return (
+                <li
+                  key={`${file.name}-${index}`}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-gray-50 bg-gray-50/50 p-3"
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <Thumbnail
+                      type={type}
+                      extension={extension}
+                      url={convertFileToUrl(file)}
+                      className="size-10 rounded-lg bg-white shadow-sm"
+                    />
 
-                  <div className="flex flex-col gap-1 overflow-hidden">
-                    <p className="text-sm font-semibold text-dark-100 line-clamp-1">
-                      {file.name}
-                    </p>
-                    <div className="flex items-center gap-2">
-                         <span className="text-[10px] font-medium text-gray-400">Loading...</span>
-                         <Image
-                           src="/assets/icons/file-loader.gif"
-                           width={60}
-                           height={20}
-                           alt="Loader"
-                           className="opacity-60"
-                         />
+                    <div className="flex flex-col gap-1 overflow-hidden">
+                      <p className="text-sm font-semibold text-dark-100 line-clamp-1">
+                        {file.name}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-medium text-gray-400">
+                          Loading...
+                        </span>
+                        <Image
+                          src="/assets/icons/file-loader.gif"
+                          width={60}
+                          height={20}
+                          alt="Loader"
+                          className="opacity-60"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
-                  onClick={(e) => handleRemoveFile(e, file.name)}
-                >
-                  <Image
-                    src="/assets/icons/remove.svg"
-                    width={20}
-                    height={20}
-                    alt="Remove"
-                  />
-                </Button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
+                    onClick={(e) => handleRemoveFile(e, file.name)}
+                  >
+                    <Image
+                      src="/assets/icons/remove.svg"
+                      width={20}
+                      height={20}
+                      alt="Remove"
+                    />
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>,
+          document.body,
+        )
+      : null;
+
+  return (
+    <>
+      <div {...getRootProps()} className="cursor-pointer">
+        <input {...getInputProps()} />
+        <Button
+          type="button"
+          className={cn(
+            "bg-brand hover:bg-brand-100 text-white font-medium h-11 rounded-full px-6 shadow-md transition-all gap-2 focus:ring-2 focus:ring-brand focus:ring-offset-2 outline-none",
+            className,
+          )}
+        >
+          <Image
+            src="/assets/icons/upload.svg"
+            alt="upload"
+            width={22}
+            height={22}
+            className="opacity-90"
+          />
+          <p>Upload</p>
+        </Button>
+      </div>
+      {uploadProgressPanel}
+    </>
   );
 };
 
