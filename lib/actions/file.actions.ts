@@ -13,6 +13,12 @@ const handleError = (error: unknown, message: string) => {
   throw error;
 };
 
+const getOwnerId = (owner: unknown): string => {
+  if (typeof owner === "string") return owner;
+  if (owner && typeof owner === "object" && "$id" in owner) return (owner as { $id: string }).$id;
+  return "";
+};
+
 export const uploadFile = async ({
   file,
   ownerId,
@@ -134,7 +140,7 @@ export const renameFile = async ({
       fileId,
     );
 
-    if (file.owner !== currentUser.$id) throw new Error("Unauthorized");
+    if (getOwnerId(file.owner) !== currentUser.$id) throw new Error("Unauthorized");
 
     const newName = `${name}.${extension}`;
     const updatedFile = await databases.updateDocument(
@@ -168,7 +174,7 @@ export const updateFileUsers = async ({
       fileId,
     );
 
-    if (file.owner !== currentUser.$id) throw new Error("Unauthorized");
+    if (getOwnerId(file.owner) !== currentUser.$id) throw new Error("Unauthorized");
 
     const updatedFile = await databases.updateDocument(
       appwriteConfig.databaseId,
@@ -201,7 +207,7 @@ export const deleteFile = async ({
       fileId,
     );
 
-    if (file.owner !== currentUser.$id) throw new Error("Unauthorized");
+    if (getOwnerId(file.owner) !== currentUser.$id) throw new Error("Unauthorized");
 
     const deletedFile = await databases.deleteDocument(
       appwriteConfig.databaseId,
